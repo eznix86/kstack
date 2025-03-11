@@ -1,0 +1,45 @@
+apps:
+  wordpress:
+    image: wordpress:latest
+    ports:
+      - "8000:80"
+    expose:
+      - wordpress.localhost:
+          port: 80
+          protocol: http
+          path: /
+    volumes:
+      - wordpress-data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mysql
+    envFrom:
+      - secret:
+          name: wordpress-db-secret
+      - config:
+          name: wordpress-config
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: wordpress
+    envFrom:
+      - secret:
+          name: wordpress-db-secret
+
+volumes:
+  wordpress-data:
+    size: 1Gi
+  mysql-data:
+    size: 5Gi
+
+configs:
+  wordpress-config:
+    external: true
+
+secrets:
+  wordpress-db-secret:
+    external: true

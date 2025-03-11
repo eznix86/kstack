@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "kstack"
+version = "0.1.0"
+description = "A tool to convert Docker Compose files to Kubernetes resources"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "kstack" },
+    { include = "kstack/parsers" },
+    { include = "kstack/generators" },
+    { include = "kstack/core" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+kubernetes = "~29.0.0"
+pyyaml = "~6.0.1"
+click = "~8.1.7"
+rich = "~13.7.0"
+jsonschema = "^4.23.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[tool.poetry.scripts]
+kstack = "kstack.entry:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

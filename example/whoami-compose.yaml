@@ -1,0 +1,84 @@
+configs:
+  fluentd-config:
+    data:
+      fluent.conf: |
+        # Capture whoami stdout logs
+        <source>
+          @type tail
+          path /fluentd/log/stdout.log
+          pos_file /fluentd/log/stdout.pos
+          tag whoami.stdout
+          <parse>
+            @type json
+            time_key time
+            time_format %Y-%m-%dT%H:%M:%S.%NZ
+          </parse>
+        </source>
+
+        # Capture whoami stderr logs
+        <source>
+          @type tail
+          path /fluentd/log/stderr.log
+          pos_file /fluentd/log/stderr.pos
+          tag whoami.stderr
+          <parse>
+            @type json
+            time_key time
+            time_format %Y-%m-%dT%H:%M:%S.%NZ
+          </parse>
+        </source>
+
+        # Output all whoami logs to stdout for debugging
+        <match whoami.**>
+          @type stdout
+          <format>
+            @type json
+            time_format %Y-%m-%dT%H:%M:%S.%NZ
+          </format>
+        </match>
+
+        # Handle Fluentd internal logs
+        <label @FLUENT_LOG>
+          <match fluent.*>
+            @type stdout
+            <format>
+              @type json
+              time_format %Y-%m-%dT%H:%M:%S.%NZ
+            </format>
+          </match>
+        </label>
+
+apps:
+  whoami:
+    image: traefik/whoami:latest
+    ports:
+      - "8080:80"
+    expose:
+      - magic-127-0-0-1.nip.io:
+          port: 80
+          protocol: http
+          ingressClassName: traefik
+    volumes:
+      - /tmp/whoami/log:/var/log/whoami
+    sidecars:
+      metrics:
+        image: prom/node-exporter:latest
+        ports:
+          - "9100:9100"
+      logger:
+        image: fluent/fluentd:v1.16-1
+        volumes:
+          - /tmp/whoami/log:/fluentd/log
+        volumesFrom:
+          - config:
+              name: fluentd-config
+              mountPath: /fluentd/etc
+        environment:
+          FLUENTD_CONF: fluent.conf
+          FLUENTD_OPT: ''
+          FLUENTD_ARGS: '--no-supervisor'
+        command:
+          - fluentd
+          - -c
+          - /fluentd/etc/fluent.conf
+          - -v
