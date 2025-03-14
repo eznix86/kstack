@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kstack"
-version = "0.1.0"
+version = "0.1.1"
 description = "Deploy Kubernetes clusters from simplified YAML"
 authors = ["Bruno Bernard <brunobernard@duck.com>"]
 readme = "README.md"
