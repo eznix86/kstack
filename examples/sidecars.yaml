@@ -1,0 +1,7 @@
+apps:
+  whoami1:
+    image: "containous/whoami"
+    sidecars:
+      nginx:
+        image:  "busybox:test"
+        command: ["tail", "-f", "/dev/null"]

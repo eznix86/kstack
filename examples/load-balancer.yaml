@@ -1,0 +1,5 @@
+apps:
+  whoami:
+    image: "containous/whoami"
+    ports:
+      - 8000:80

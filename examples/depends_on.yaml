@@ -1,0 +1,8 @@
+apps:
+  whoami3:
+    image: "containous/whoami"
+
+  whoami4:
+    image: "containous/whoami"
+    depends_on:
+      - whoami4

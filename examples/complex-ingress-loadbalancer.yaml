@@ -1,0 +1,18 @@
+apps:
+  whoami1:
+    image: "containous/whoami"
+    ports:
+      - 8000:80
+    expose:
+      - magic.192.168.64.44.nip.io:
+        port: 80
+        path: /
+
+  whoami2:
+    image: "containous/whoami"
+    ports:
+      - 8001:80
+    expose:
+      - app.192.168.64.44.nip.io:
+        port: 80
+        path: /

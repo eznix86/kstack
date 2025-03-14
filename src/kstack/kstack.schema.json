@@ -1,0 +1,258 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "apps": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/$defs/container"
+            }
+        },
+        "configs": {
+            "type": "object",
+            "additionalProperties": false
+        },
+        "secrets": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "external": {
+                        "type": "boolean"
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "volumes": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "accessModes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "storage": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "apps"
+    ],
+    "additionalProperties": false,
+    "$defs": {
+        "sidecars": {
+            "type": "object",
+            "additionalProperties": {
+                "allOf": [
+                    { "$ref": "#/$defs/container" },
+                    { "properties": { "sidecars": { "not": {} } } }
+                ]
+            }
+        },
+        "envfrom": {
+            "type": "object",
+            "properties": {
+                "secrets": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": { "type": "string" },
+                                        "set": { "type": "string" }
+                                    },
+                                    "required": ["key", "set"],
+                                    "additionalProperties": false
+                                },
+                                "maxProperties": 1
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "volumefrom": {
+            "type": "object",
+            "properties": {
+                "secrets": {
+                    "type": "array",
+                    "items": {
+                        "oneOf": [
+                            { 
+                                "type": "string"
+                            },
+                            { 
+                                "type": "object",
+                                "patternProperties": {
+                                    "^.*$": {
+                                        "type": "object",
+                                        "properties": {
+                                            "items": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "required": ["key", "mount"],
+                                                    "additionalProperties": {
+                                                        "key": { "type": "string" },
+                                                        "mount": { "type": "string" }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "required": ["items"],
+                                        "additionalProperties": false
+                                    }
+                                },
+                                "additionalProperties": false,
+                                "maxProperties": 1
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "volumes": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "file": {
+                                "type": "null"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "mount": {
+                                "type": "string"
+                            },
+                            "read_only": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": ["file", "path", "mount"],
+                        "additionalProperties": false
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "directory": {
+                                "type": "null"
+                            },
+                            "path": {
+                                "type": "string"
+                            },
+                            "mount": {
+                                "type": "string"
+                            },
+                            "read_only": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": ["directory", "path", "mount"],
+                        "additionalProperties": false
+                    }
+                ]
+            }
+        },
+        "container": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "number"
+                },
+                "env": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "volumes": {
+                    "$ref": "#/$defs/volumes"
+                },
+                "networks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "depends_on": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "expose": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "host": {
+                                "type": "string"
+                            },
+                            "port": {
+                                "type": "number"
+                            },
+                            "path": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "port"
+                        ]
+                    }
+                },
+                "command": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sidecars": {
+                    "$ref": "#/$defs/sidecars"
+                },
+                "envFrom": {
+                    "$ref": "#/$defs/envfrom"
+                },
+                "volumeFrom": {
+                    "$ref": "#/$defs/volumefrom"
+                }
+            },
+            "required": [
+                "image"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

@@ -1,0 +1,3 @@
+apps:
+  whoami:
+    image: "containous/whoami"

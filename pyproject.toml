@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "kstack"
+version = "0.1.0"
+description = "Deploy Kubernetes clusters from simplified YAML"
+authors = ["Bruno Bernard <brunobernard@duck.com>"]
+readme = "README.md"
+packages = [{include = "kstack", from = "src"}]
+license = "GPL-3.0-or-later"
+repository = "https://github.com/eznix86/kstack"
+keywords = ["k8s", "kubernetes", "cluster", "deployment", "devops"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Software Development :: Build Tools"
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+click = "^8.1.8"
+halo = "^0.0.31"
+jsonschema = "^4.23.0"
+kubernetes = "^32.0.1"
+pyyaml = "^6.0.2"
+questionary = "^2.1.0"
+rich = "^13.9.4"
+
+[tool.poetry.scripts]
+kstack = "kstack.console:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

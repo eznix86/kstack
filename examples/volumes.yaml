@@ -1,0 +1,20 @@
+apps:
+  whoami1:
+    image: "containous/whoami"
+    volumes:
+      - /var/html:/var/html:ro
+      - directory: # hostPath DirectoryOrCreate
+        path: /tmp
+        mount: /tmp
+      - file: # hostPath FileOrCreate
+        path: /tmp/file.txt
+        mount: /tmp/file.txt
+        read_only: true
+      - db-storage:/var/db
+
+volumes:
+  db-storage:
+    storage: 5Gi
+    access_modes:
+      - ReadWriteOnce
+
